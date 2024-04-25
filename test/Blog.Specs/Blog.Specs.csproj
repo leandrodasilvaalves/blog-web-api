@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+        <PackageReference Include="Refit" Version="7.0.0" />
         <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
         <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
         <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
@@ -26,6 +27,5 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Blog.Api\Blog.Api.csproj" />
-        <ProjectReference Include="..\..\src\Blog.Contracts\Blog.Contracts.csproj" />
     </ItemGroup>
 </Project>
