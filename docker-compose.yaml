@@ -1,0 +1,46 @@
+version: "3.4"
+
+services:
+  api:    
+    container_name: blog.api
+    image: leandroalves86/blog.api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5326:80
+      - 7197:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+  
+  mongo:
+    image: mongo
+    container_name: blog.mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpwd
+    ports:
+      - 27017:27017
+    cpus: 0.5
+    mem_limit: 256M
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: blog.rabbit
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      retries: 3
+      start_period: 5s
+    cpus: 0.5
+    mem_limit: 256M

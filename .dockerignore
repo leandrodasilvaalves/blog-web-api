@@ -1,0 +1,9 @@
+./test/
+./src/**/bin
+./src/**/obj
+.editorconfig
+.git/
+.gitignore
+Dockerfile
+docker-compose.yaml
+*.http
