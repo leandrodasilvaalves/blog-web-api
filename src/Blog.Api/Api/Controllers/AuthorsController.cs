@@ -8,17 +8,12 @@ namespace Blog.Api.Api.Controllers
     [Route("api/v1/authors")]
     public class AuthorsController : ControllerBase
     {
+
         [HttpPost]
-        public Task<IActionResult> PostAsync([FromBody] RegisterAuthorRequest request)
+        public async Task<IActionResult> PostAsync([FromBody] RegisterAuthorRequest request, [FromServices] IRegisterAuthorHandler handler)
         {
-            var response = new RegisterAuthorResponse
-            {
-                Id = $"{Guid.NewGuid()}",
-                Name = request.Name,
-                Email = request.Email,
-                CreatedAt = DateTime.UtcNow,
-            };
-            return Task.FromResult<IActionResult>(Created(string.Empty, response));
+            var response = await handler.HandleAsync(request, HttpContext.RequestAborted);
+            return response.IsSuccess ? Created(string.Empty, response.Value) : UnprocessableEntity(response.Errors);
         }
     }
 }

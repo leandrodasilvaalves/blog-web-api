@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+using Blog.Api.Api.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
@@ -11,6 +13,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDependencyInjection();
 
 var app = builder.Build();
 

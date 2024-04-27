@@ -9,8 +9,6 @@ using Refit;
 
 using TechTalk.SpecFlow;
 
-using Xunit;
-
 namespace Blog.Specs.Steps;
 
 [Binding]
@@ -41,7 +39,7 @@ public sealed class AuthorStepDefinition(ScenarioContext scenarioContext)
         var response = _scenarioContext.Get<ApiResponse<RegisterAuthorResponse>>("response");
         var content = response.Content;
 
-        content.Id.Should().NotBeNullOrEmpty();
+        content.Id.Should().NotBeNullOrWhiteSpace();
         content.Name.Should().Be(request.Name);
         content.Email.Should().Be(request.Email);
         content.CreatedAt.Should().BeBefore(DateTime.UtcNow);
