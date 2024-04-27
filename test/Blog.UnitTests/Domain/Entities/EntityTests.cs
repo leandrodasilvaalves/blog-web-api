@@ -61,4 +61,14 @@ public class EntityTests
 
         sut.HasError().Should().BeFalse();
     }
+
+    [Theory]
+    [AutoData]
+    public void ShouldHaveErrorWhenEntityIsInvalid(FakeEntity sut)
+    {
+        sut.Foo = "";
+        sut.FakeValidate();
+
+        sut.HasError().Should().BeTrue();
+    }
 }

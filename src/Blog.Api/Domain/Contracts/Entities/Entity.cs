@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 using Blog.Api.Domain.Contracts.Enums;
 
@@ -14,7 +15,10 @@ public abstract class Entity
     }
 
     private readonly List<IError> _errors = [];
+
+    [Required]
     public string Id { get; private set; }
+    
     public DateTime CreatedAt { get; protected set; }
     public DateTime UpdatedAt { get; protected set; }
     public Status Status { get; protected set; }
@@ -41,4 +45,15 @@ public abstract class Entity
     }
 
     protected void ClearErrors() => _errors.Clear();
+
+    protected void Validate()
+    {
+        var validationResults = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(this, new ValidationContext(this), validationResults, true);
+        if (result is false)
+        {
+            var errors = validationResults.Select(e => new Error(e.ErrorMessage));
+            AddErrors(errors);
+        }
+    }
 }
