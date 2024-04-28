@@ -8,6 +8,7 @@ using FluentAssertions;
 using Refit;
 
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
 
 namespace Blog.Specs.Steps;
 
@@ -17,10 +18,17 @@ public sealed class AuthorStepDefinition(ScenarioContext scenarioContext)
     private readonly ScenarioContext _scenarioContext = scenarioContext;
     private readonly IAuthorsHttpClient _client = BaseHttpClient.Create<IAuthorsHttpClient>();
 
-    [Given("que o usuário faz uma requisição para a rota de cadastro de autores")]
+    [Given("que o usuário faz uma requisição válida para a rota de cadastro de autores")]
     public void Given_That_The_User_Makes_A_Request_For_The_Author_Registration_Route()
     {
         var request = new RegisterAuthorRequest { Name = "João da Silva", Email = "contato@contoso.com" };
+        _scenarioContext["request"] = request;
+    }
+
+    [Given("que o usuário faz uma requisição inválida para a rota de cadastro de autores")]
+    public void Given_Than_User_Makes_A_Invalid_Request_For_The_Author_Registration_Route(Table table)
+    {
+        var request = table.CreateInstance<RegisterAuthorRequest>();
         _scenarioContext["request"] = request;
     }
 
@@ -44,5 +52,14 @@ public sealed class AuthorStepDefinition(ScenarioContext scenarioContext)
         content.Email.Should().Be(request.Email);
         content.CreatedAt.Should().BeBefore(DateTime.UtcNow);
         response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    [Then("a API retorna uma resposta de erro com status 422")]
+    public void Then_The_Api_Returns_A_Response_Error_With_StatusCode_Unprocessable_Entity()
+    {
+        var response = _scenarioContext.Get<ApiResponse<RegisterAuthorResponse>>("response");
+
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        response.Error.Content.Should().NotBeNullOrEmpty();
     }
 }

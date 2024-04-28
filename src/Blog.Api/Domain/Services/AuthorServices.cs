@@ -13,6 +13,8 @@ public class AuthorServices : IAuthorServices
         var author = new Author();
         author.Create(request);
 
-        return Task.FromResult(Result.Ok(author));
+        return author.HasError() ?
+            Task.FromResult(Result.Fail<Author>(author.Errors)) :
+            Task.FromResult(Result.Ok(author));
     }
 }
