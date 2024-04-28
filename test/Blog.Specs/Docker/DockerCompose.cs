@@ -1,9 +1,30 @@
+using Ductus.FluentDocker.Services;
+
 namespace Blog.Specs.Docker
 {
     public class DockerCompose
     {
+        private static ICompositeService Containers { get; set; }
         private static readonly string[] Extensions = [".yaml", ".yml"];
-        public static string[] GetFiles(DirectoryInfo directoryInfo = null)
+
+        public static void Up()
+        {
+            Containers = new Ductus.FluentDocker.Builders.Builder()
+                            .UseContainer()
+                            .UseCompose()
+                            .FromFile(GetFiles())
+                            .ForceBuild()
+                            .ForceRecreate()
+                            .RemoveOrphans()
+                            .RemoveAllImages()
+                            .WaitForHttp("api", "http://localhost:5326/swagger")
+                            .Build()
+                            .Start();
+        }
+
+        public static void Down() => Containers.Dispose();
+
+        private static string[] GetFiles(DirectoryInfo directoryInfo = null)
         {
             directoryInfo ??= new DirectoryInfo(Environment.CurrentDirectory);
 
@@ -11,7 +32,7 @@ namespace Blog.Specs.Docker
                 .GetFiles()
                 .Where(f => Extensions.Contains(f.Extension.ToLower()));
 
-            if(HasSolutionFile(directoryInfo) && dockerComposeFiles?.Count() == 0)
+            if (HasSolutionFile(directoryInfo) && dockerComposeFiles?.Count() == 0)
                 throw new FileNotFoundException("No one docker compose file was found");
 
             return dockerComposeFiles?.Count() == 0 ?

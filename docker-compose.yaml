@@ -3,7 +3,7 @@ version: "3.4"
 services:
   api:    
     container_name: blog.api
-    image: leandroalves86/blog.api:latest
+    image: leandroalves86/blog.api:${API_VERSION}
     build:
       context: .
       dockerfile: Dockerfile

@@ -8,7 +8,7 @@ Funcionalidade: Registrar Autor
 
   Cenário: Erro ao enviar request inválido
     Dado que o usuário faz uma requisição inválida para a rota de cadastro de autores
-      | Name   | Email               |
-      | "J"    | "email@contoso.com" |
+      | Name | Email             |
+      | J    | email@contoso.com |
     Quando ele envia os dados do autor no corpo da requisição
     Então a API retorna uma resposta de erro com status 422
