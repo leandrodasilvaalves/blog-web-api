@@ -17,7 +17,7 @@ public abstract class Entity
     private readonly List<IError> _errors = [];
 
     [Required]
-    public string Id { get; private set; }
+    public string Id { get; protected set; }
     
     public DateTime CreatedAt { get; protected set; }
     public DateTime UpdatedAt { get; protected set; }

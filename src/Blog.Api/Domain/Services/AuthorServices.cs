@@ -1,5 +1,6 @@
 using Blog.Api.Domain.Contracts.Requests;
 using Blog.Api.Domain.Contracts.Services;
+using Blog.Api.Domain.Data;
 using Blog.Api.Domain.Entities;
 
 using FluentResults;
@@ -8,13 +9,23 @@ namespace Blog.Api.Domain.Services;
 
 public class AuthorServices : IAuthorServices
 {
-    public Task<Result<Author>> RegisterAsync(IRegisterAuthorRequest request, CancellationToken cancellationToken)
+    private readonly IAuthorData _authorData;
+
+    public AuthorServices(IAuthorData authorData)
+    {
+        _authorData = authorData ?? throw new ArgumentNullException(nameof(authorData));
+    }
+
+    public async Task<Result<Author>> RegisterAsync(IRegisterAuthorRequest request, CancellationToken cancellationToken)
     {
         var author = new Author();
         author.Create(request);
 
-        return author.HasError() ?
-            Task.FromResult(Result.Fail<Author>(author.Errors)) :
-            Task.FromResult(Result.Ok(author));
+        if (author.HasError())
+        {
+            return Result.Fail<Author>(author.Errors);
+        }        
+        await _authorData.InsertAsync(author, cancellationToken);
+        return Result.Ok(author);
     }
 }
