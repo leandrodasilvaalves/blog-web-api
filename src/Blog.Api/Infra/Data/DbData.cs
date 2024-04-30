@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using Blog.Api.Domain.Contracts.Entities;
 using Blog.Api.Domain.Data;
 using Blog.Api.Infra.Data.Context.Mongo;
@@ -23,13 +25,20 @@ public class DbData<TEntity, TModel> : IData<TEntity>
 
     public Task InsertAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        var model = _mapper.ToModel(entity);
+        var model = _mapper.Map(entity);
         return _context.Collection.InsertOneAsync(model, new(), cancellationToken);
     }
 
     public async Task<TEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         var model = await _context.Collection.Find(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
-        return _mapper.ToEntity(model);
+        return _mapper.Map(model);
+    }
+
+    public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
+    {
+        var predicate2 = ExpressionsMapper<TEntity, TModel>.Map(predicate);
+        var model = await _context.Collection.Find(predicate2).FirstOrDefaultAsync(cancellationToken);
+        return _mapper.Map(model);
     }
 }

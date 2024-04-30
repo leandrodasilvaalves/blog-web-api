@@ -7,6 +7,6 @@ public interface IMapper<TEntity, TModel>
     where TEntity : Entity 
     where TModel : DbModel
 {
-    TModel ToModel(TEntity entity);
-    TEntity ToEntity(TModel model);
+    TModel Map(TEntity entity);
+    TEntity Map(TModel model);
 }

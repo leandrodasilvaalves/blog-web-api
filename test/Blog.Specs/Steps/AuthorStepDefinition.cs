@@ -1,9 +1,13 @@
 using System.Net;
 
 using Blog.Api.Application.Authors.RegisterAuthors;
+using Blog.Api.Infra.Data.Context.Mongo;
+using Blog.Api.Infra.Data.Models;
 using Blog.Specs.Clients;
 
 using FluentAssertions;
+
+using MongoDB.Bson;
 
 using Refit;
 
@@ -13,10 +17,11 @@ using TechTalk.SpecFlow.Assist;
 namespace Blog.Specs.Steps;
 
 [Binding]
-public sealed class AuthorStepDefinition(ScenarioContext scenarioContext)
+public sealed class AuthorStepDefinition(ScenarioContext scenarioContext, IMongoDbContext<AuthorDbModel> mongo)
 {
     private readonly ScenarioContext _scenarioContext = scenarioContext;
     private readonly IAuthorsHttpClient _client = BaseHttpClient.Create<IAuthorsHttpClient>();
+    private readonly IMongoDbContext<AuthorDbModel> _mongo = mongo;
 
     [Given("que o usuário faz uma requisição válida para a rota de cadastro de autores")]
     public void Given_That_The_User_Makes_A_Request_For_The_Author_Registration_Route()
@@ -30,6 +35,26 @@ public sealed class AuthorStepDefinition(ScenarioContext scenarioContext)
     {
         var request = table.CreateInstance<RegisterAuthorRequest>();
         _scenarioContext["request"] = request;
+    }
+
+    [Given("que o usuário tenta cadastrar um autor com um e-mail já existente")]
+    public void Given_That_The_User_Tries_To_Register_An_Existing_Email(Table table)
+    {
+        var request = table.CreateInstance<RegisterAuthorRequest>();
+        _scenarioContext["request"] = request;
+
+        var mongoDbModel = new AuthorDbModel { Id = $"{Guid.NewGuid()}", Email = request.Email };
+        _mongo.Collection.InsertOne(mongoDbModel);
+    }
+
+    [Given("que o usuário tenta cadastrar um autor com um nome já existente")]
+    public void Given_That_The_User_Tries_To_Register_An_Existing_Name(Table table)
+    {
+        var request = table.CreateInstance<RegisterAuthorRequest>();
+        _scenarioContext["request"] = request;
+
+        var mongoDbModel = new AuthorDbModel { Id = $"{Guid.NewGuid()}", Name = request.Name };
+        _mongo.Collection.InsertOne(mongoDbModel);
     }
 
     [When("ele envia os dados do autor no corpo da requisição")]

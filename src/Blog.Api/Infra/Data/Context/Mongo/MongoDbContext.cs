@@ -10,7 +10,7 @@ namespace Blog.Api.Infra.Data.Context.Mongo;
 
 public class MongoDbContext<T> : IMongoDbContext<T> where T : DbModel
 {
-    public MongoDbContext(IOptionsMonitor<MongoConfig> options)
+    public MongoDbContext(MongoConfig options)
     {
         if (options is null)
         {
@@ -18,7 +18,7 @@ public class MongoDbContext<T> : IMongoDbContext<T> where T : DbModel
         }
 
         LoadCustomConfiguration();
-        Collection = ConfigureCollection(options.CurrentValue);
+        Collection = ConfigureCollection(options);
     }
 
     public IMongoCollection<T> Collection { get; }

@@ -16,7 +16,6 @@ namespace Blog.Specs.Docker
                             .ForceBuild()
                             .ForceRecreate()
                             .RemoveOrphans()
-                            .RemoveAllImages()
                             .WaitForHttp("api", "http://localhost:5326/swagger")
                             .Build()
                             .Start();

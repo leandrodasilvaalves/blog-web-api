@@ -13,4 +13,13 @@ public static class ApiExtensions
         self.AddInfra(config);
         return self;
     }
+
+    public static IApplicationBuilder UseHttpsRedirection(this IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsProduction())
+        {
+            app.UseHttpsRedirection();
+        }
+        return app;
+    }
 }

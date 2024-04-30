@@ -12,3 +12,17 @@ Funcionalidade: Registrar Autor
       | J    | email@contoso.com |
     Quando ele envia os dados do autor no corpo da requisição
     Então a API retorna uma resposta de erro com status 422
+
+  Cenário: Erro ao tentar cadastrar autor e-mail já existente
+    Dado que o usuário tenta cadastrar um autor com um e-mail já existente
+      | Name  | Email               |
+      | James | contato@emailexistente.com |
+    Quando ele envia os dados do autor no corpo da requisição
+    Então a API retorna uma resposta de erro com status 422
+
+  Cenário: Erro ao tentar cadastrar autor nome já existente
+    Dado que o usuário tenta cadastrar um autor com um nome já existente
+      | Name | Email                |
+      | Paul | contato2@emailexistente.com |
+    Quando ele envia os dados do autor no corpo da requisição
+    Então a API retorna uma resposta de erro com status 422
