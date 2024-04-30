@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using Blog.Api.Application.Authors.RegisterAuthors;
+using Blog.Api.Domain.Contracts.DTOs;
 using Blog.Api.Domain.Entities;
 using Blog.UnitTests.Fixtures.Attributes;
 
@@ -37,5 +38,19 @@ public class AuthorTests
     {
         sut.Create(request);
         sut.HasError().Should().BeFalse();
+    }
+
+    [Theory]
+    [AuthorsAutoData]
+    public void ShouldCreateAnAuthorEntityFromAuthorDto(AuthorDto dto)
+    {
+        var author = new Author(dto);
+
+        author.Id.Should().Be(dto.Id);
+        author.Name.Should().Be(dto.Name);
+        author.Email.Should().Be(dto.Email);
+        author.Status.Should().Be(dto.Status);
+        author.CreatedAt.Should().Be(dto.CreatedAt);
+        author.UpdatedAt.Should().Be(dto.UpdatedAt);
     }
 }

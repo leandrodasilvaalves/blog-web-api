@@ -9,7 +9,6 @@ namespace Blog.Api.Domain.Entities;
 
 public class Author : Entity
 {
-
     public Author() { }
     public Author(AuthorDto dto)
     {
