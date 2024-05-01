@@ -1,7 +1,5 @@
 using Blog.Api.Infra.Data.Models;
 
-using Microsoft.Extensions.Options;
-
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
